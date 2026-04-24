@@ -1,26 +1,220 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════
+   RAHULCYBERX — Deep Space Design System
+   ═══════════════════════════════════════════════════════ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Void Palette ── */
+  --void: #020617;
+  --abyss: #0f172a;
+  --nebula: #1e293b;
+  --nebula-bright: #334155;
+  --spectral: #94a3b8;
+  --ghost: #e2e8f0;
+  --white: #f8fafc;
+
+  /* ── Accent Glows ── */
+  --cyan-glow: #06b6d4;
+  --cyan-mist: rgba(6, 182, 212, 0.1);
+  --cyan-bright: #22d3ee;
+  --violet-glow: #7c3aed;
+  --violet-mist: rgba(124, 58, 237, 0.1);
+  --violet-bright: #a78bfa;
+  --danger: #ef4444;
+  --success: #22c55e;
+
+  /* ── Surfaces ── */
+  --background: var(--void);
+  --foreground: var(--ghost);
+
+  /* ── Glass ── */
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(148, 163, 184, 0.1);
+  --glass-highlight: rgba(148, 163, 184, 0.05);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-void: var(--void);
+  --color-abyss: var(--abyss);
+  --color-nebula: var(--nebula);
+  --color-nebula-bright: var(--nebula-bright);
+  --color-spectral: var(--spectral);
+  --color-ghost: var(--ghost);
+  --color-cyan-glow: var(--cyan-glow);
+  --color-cyan-mist: var(--cyan-mist);
+  --color-cyan-bright: var(--cyan-bright);
+  --color-violet-glow: var(--violet-glow);
+  --color-violet-mist: var(--violet-mist);
+  --color-violet-bright: var(--violet-bright);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-glass-highlight: var(--glass-highlight);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+
+  /* ── Animation Tokens ── */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
+  --animate-beam: beam 8s ease-in-out infinite;
+  --animate-meteor: meteor 5s linear infinite;
+  --animate-text-reveal: text-reveal 0.5s ease forwards;
+  --animate-scan-line: scan-line 4s linear infinite;
+  --animate-flicker: flicker 3s ease-in-out infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── Keyframes ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 5px var(--cyan-mist), 0 0 20px var(--cyan-mist);
+    border-color: rgba(6, 182, 212, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 10px var(--cyan-glow), 0 0 40px var(--cyan-mist);
+    border-color: rgba(6, 182, 212, 0.6);
   }
 }
 
+@keyframes beam {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(200%) rotate(45deg); }
+}
+
+@keyframes meteor {
+  0% { transform: rotate(215deg) translateX(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: rotate(215deg) translateX(-500px); opacity: 0; }
+}
+
+@keyframes text-reveal {
+  from { opacity: 0; filter: blur(4px); }
+  to { opacity: 1; filter: blur(0px); }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  52% { opacity: 1; }
+  54% { opacity: 0.9; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Base Styles ── */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--void);
+  color: var(--ghost);
+  font-family: var(--font-sans, "Inter", system-ui, sans-serif);
+  overflow-x: hidden;
+}
+
+/* ── Noise Texture Overlay ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ── Glassmorphism Utility ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-subtle {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.05);
+}
+
+/* ── Glow Borders ── */
+.glow-cyan {
+  box-shadow: 0 0 5px var(--cyan-mist), 0 0 20px rgba(6, 182, 212, 0.05);
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+.glow-violet {
+  box-shadow: 0 0 5px var(--violet-mist), 0 0 20px rgba(124, 58, 237, 0.05);
+  border-color: rgba(124, 58, 237, 0.3);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--void);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nebula);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nebula-bright);
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(6, 182, 212, 0.3);
+  color: var(--white);
+}
+
+/* ── Shiki Code Blocks ── */
+pre.shiki {
+  background: transparent !important;
+  padding: 1rem 1.25rem;
+  margin: 0;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+pre.shiki code {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+}
+
+.shiki .line.highlighted {
+  background: rgba(6, 182, 212, 0.08);
+  border-left: 2px solid var(--cyan-glow);
+  margin-left: -1.25rem;
+  padding-left: calc(1.25rem - 2px);
+  margin-right: -1.25rem;
+  padding-right: 1.25rem;
+}
+
+.shiki .line.diff.add {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.shiki .line.diff.remove {
+  background: rgba(239, 68, 68, 0.1);
 }
