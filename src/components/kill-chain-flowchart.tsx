@@ -139,7 +139,7 @@ export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartPro
                           stiffness: 300,
                           damping: 25,
                         }}
-                        className="flex-1 px-3 py-2.5 rounded-md text-center cursor-pointer transition-all duration-200 hover:scale-[1.03] group"
+                        className="flex-1 min-w-0 px-3 py-2.5 rounded-md text-center cursor-pointer transition-all duration-200 hover:scale-[1.03] group"
                         style={{
                           backgroundColor: phase.glow,
                           border: `1.5px solid ${phase.border}`,

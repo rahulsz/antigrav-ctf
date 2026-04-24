@@ -1,16 +1,12 @@
 "use client";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
-import { Suspense, useRef } from "react";
-import { Timer } from "three";
+import { Suspense } from "react";
 
 function StarfieldScene() {
-  const timer = useRef(new Timer());
-
   useFrame((state) => {
-    timer.current.update();
     // Slow rotation for subtle movement
-    state.scene.rotation.y = timer.current.getElapsed() * 0.02;
+    state.scene.rotation.y = state.clock.getElapsedTime() * 0.02;
   });
 
   return (

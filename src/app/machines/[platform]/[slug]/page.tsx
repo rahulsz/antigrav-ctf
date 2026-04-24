@@ -47,12 +47,16 @@ async function getHighlightedSections(content: string) {
   });
 
   // Split into sections by ## heading
-  const rawSections = processedContent.split(/^## /m).filter((s) => s.trim());
+  const rawSections = processedContent.split(/(?:^|\n)## /).slice(1);
   const sections = rawSections.map((section) => {
     const lines = section.split("\n");
-    const title = lines[0].trim();
+    let title = lines[0].trim();
     const body = lines.slice(1).join("\n").trim();
     const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    
+    // Remove numbering for cleaner UI presentation
+    title = title.replace(/^\d+\.\s*/, "");
+    
     return { id, title, body };
   });
 
