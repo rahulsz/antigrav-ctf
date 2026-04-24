@@ -1,11 +1,12 @@
 import { getAllMachines } from "@/lib/machines";
 import { FloatingNav } from "@/components/floating-nav";
-import { MachinesGrid } from "@/components/machines-grid";
+import { CommandConsole } from "@/components/command-console";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Machines",
-  description: "Browse all CTF machine walkthroughs — sorted by difficulty and date.",
+  description: "Browse all CTF machine walkthroughs — filter by platform, category, and difficulty.",
 };
 
 export default function MachinesPage() {
@@ -33,54 +34,10 @@ export default function MachinesPage() {
           </p>
         </div>
 
-        {/* Stats bar */}
-        <div className="flex items-center gap-6 mb-8 py-3 px-5 glass rounded-lg w-fit">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-spectral/50">TOTAL:</span>
-            <span className="text-sm font-mono font-bold text-ghost">{machines.length}</span>
-          </div>
-          <div className="w-px h-4 bg-glass-border" />
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-spectral/50">EASY:</span>
-            <span className="text-sm font-mono text-success">
-              {machines.filter((m) => m.difficulty === "Easy").length}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-spectral/50">MEDIUM:</span>
-            <span className="text-sm font-mono text-yellow-400">
-              {machines.filter((m) => m.difficulty === "Medium").length}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-spectral/50">HARD:</span>
-            <span className="text-sm font-mono text-orange-500">
-              {machines.filter((m) => m.difficulty === "Hard").length}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-spectral/50">INSANE:</span>
-            <span className="text-sm font-mono text-danger">
-              {machines.filter((m) => m.difficulty === "Insane").length}
-            </span>
-          </div>
-        </div>
-
-        {/* Grid */}
-        <MachinesGrid machines={machines} />
-
-        {/* Empty state */}
-        {machines.length === 0 && (
-          <div className="text-center py-20 glass rounded-xl">
-            <p className="text-spectral font-mono text-sm mb-2">
-              No breach records found
-            </p>
-            <p className="text-spectral/50 text-xs">
-              Add machine walkthroughs to{" "}
-              <code className="text-cyan-glow/60">content/machines/</code>
-            </p>
-          </div>
-        )}
+        {/* Command Console + Filtered Grid */}
+        <Suspense fallback={null}>
+          <CommandConsole machines={machines} />
+        </Suspense>
       </div>
     </div>
   );

@@ -7,9 +7,10 @@ export function MachinesPreview({ machines }: { machines: MachineMetadata[] }) {
     <div id="machines" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {machines.slice(0, 6).map((machine, idx) => (
         <MachineCard
-          key={machine.slug}
+          key={`${machine.platform}-${machine.slug}`}
           name={machine.name}
           slug={machine.slug}
+          platform={machine.platform}
           os={machine.os}
           difficulty={machine.difficulty}
           points={machine.points}

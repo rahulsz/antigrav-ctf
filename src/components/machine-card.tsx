@@ -2,12 +2,15 @@
 import { motion } from "framer-motion";
 import { CardSpotlight } from "@/components/ui/aceternity/card-spotlight";
 import { getDifficultyColor, getDifficultyBg } from "@/lib/difficulty";
+import { PLATFORMS } from "@/lib/platforms";
+import type { Platform } from "@/lib/types";
 import { Monitor, Apple, Terminal, Calendar, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 interface MachineCardProps {
   name: string;
   slug: string;
+  platform: Platform;
   os: string;
   difficulty: string;
   points: number;
@@ -26,6 +29,7 @@ function getOSIcon(os: string) {
 export function MachineCard({
   name,
   slug,
+  platform,
   os,
   difficulty,
   points,
@@ -33,6 +37,9 @@ export function MachineCard({
   description,
   index = 0,
 }: MachineCardProps) {
+  const platformConfig = PLATFORMS[platform];
+  const platformSlug = platformConfig?.slug || platform.toLowerCase();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -44,8 +51,8 @@ export function MachineCard({
         delay: index * 0.1,
       }}
     >
-      <Link href={`/machines/${slug}`}>
-        <CardSpotlight className="h-full">
+      <Link href={`/machines/${platformSlug}/${slug}`}>
+        <CardSpotlight className="h-full" color={platformConfig?.glowColor}>
           <div className="p-5 flex flex-col h-full">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
@@ -66,6 +73,17 @@ export function MachineCard({
                 {difficulty}
               </span>
             </div>
+
+            {/* Platform badge */}
+            {platformConfig && (
+              <div className="mb-3">
+                <span
+                  className={`inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border ${platformConfig.bgClass}`}
+                >
+                  {platformConfig.name}
+                </span>
+              </div>
+            )}
 
             {/* Description */}
             {description && (

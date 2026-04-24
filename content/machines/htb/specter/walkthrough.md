@@ -1,5 +1,7 @@
 ---
 name: Specter
+platform: HTB
+category: Linux
 os: Linux
 difficulty: Medium
 points: 30

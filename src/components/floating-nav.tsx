@@ -3,10 +3,11 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Home, Server, Menu, X } from "lucide-react";
+import { Home, Server, LayoutGrid } from "lucide-react";
 
 const navItems = [
   { name: "Home", link: "/", icon: <Home className="w-4 h-4" /> },
+  { name: "Platforms", link: "/platforms", icon: <LayoutGrid className="w-4 h-4" /> },
   { name: "Machines", link: "/machines", icon: <Server className="w-4 h-4" /> },
 ];
 

@@ -1,22 +1,21 @@
 import { notFound } from "next/navigation";
-import { getMachineBySlug, getMachineSlugs } from "@/lib/machines";
+import { getMachineBySlug, getMachineParams } from "@/lib/machines";
 import { highlightCode } from "@/lib/shiki";
 import { FloatingNav } from "@/components/floating-nav";
 import { WalkthroughContent } from "./walkthrough-content";
 import type { Metadata } from "next";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ platform: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const slugs = getMachineSlugs();
-  return slugs.map((slug) => ({ slug }));
+  return getMachineParams();
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const machine = getMachineBySlug(slug);
+  const { platform, slug } = await params;
+  const machine = getMachineBySlug(platform, slug);
   if (!machine) return { title: "Not Found" };
 
   return {
@@ -25,57 +24,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// Parse markdown into sections and highlight code blocks
-async function parseContent(content: string) {
-  const sections: Array<{
-    id: string;
-    title: string;
-    content: string;
-  }> = [];
-
-  // Split by ## headings
-  const parts = content.split(/^## /m);
-
-  for (const part of parts) {
-    if (!part.trim()) continue;
-
-    const lines = part.split("\n");
-    const title = lines[0].trim();
-    let body = lines.slice(1).join("\n");
-
-    // Process code blocks with Shiki
-    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-    let match;
-    const replacements: Array<{ original: string; html: string; lang: string; code: string }> = [];
-
-    while ((match = codeBlockRegex.exec(body)) !== null) {
-      const lang = match[1] || "plaintext";
-      const code = match[2].trim();
-      const html = await highlightCode(code, lang);
-      replacements.push({ original: match[0], html, lang, code });
-    }
-
-    // Replace code blocks with a special marker for client rendering
-    for (let i = 0; i < replacements.length; i++) {
-      const r = replacements[i];
-      const marker = `<!--CODEBLOCK:${i}:${r.lang}-->`;
-      body = body.replace(r.original, marker);
-    }
-
-    const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-
-    sections.push({
-      id,
-      title,
-      content: body,
-    });
-  }
-
-  return sections;
-}
-
+// Extract all code blocks and highlight them server-side
 async function getHighlightedSections(content: string) {
-  // Extract all code blocks and highlight them
   const codeBlocks: Array<{ lang: string; code: string; html: string }> = [];
   const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
   let match;
@@ -110,8 +60,8 @@ async function getHighlightedSections(content: string) {
 }
 
 export default async function MachineWalkthroughPage({ params }: PageProps) {
-  const { slug } = await params;
-  const machine = getMachineBySlug(slug);
+  const { platform, slug } = await params;
+  const machine = getMachineBySlug(platform, slug);
 
   if (!machine) {
     notFound();

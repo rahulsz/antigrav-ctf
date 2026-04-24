@@ -5,14 +5,21 @@ import { cn } from "@/lib/utils";
 export const CardSpotlight = ({
   children,
   className,
+  color,
 }: {
   children: React.ReactNode;
   className?: string;
+  color?: string;
 }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
+
+  const spotlightColor = color || "rgba(6, 182, 212, 0.1)";
+  const borderColor = color
+    ? color.replace(/[\d.]+\)$/, "0.2)")
+    : "rgba(6, 182, 212, 0.2)";
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!divRef.current) return;
@@ -47,7 +54,7 @@ export const CardSpotlight = ({
         className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500"
         style={{
           opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(6, 182, 212, 0.1), transparent 40%)`,
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
         }}
       />
       {/* Border glow */}
@@ -55,7 +62,7 @@ export const CardSpotlight = ({
         className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition-opacity duration-500"
         style={{
           opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, rgba(6, 182, 212, 0.2), transparent 40%)`,
+          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, ${borderColor}, transparent 40%)`,
           mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
           maskComposite: "xor",
           WebkitMaskComposite: "xor",

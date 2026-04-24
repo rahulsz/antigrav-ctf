@@ -1,10 +1,16 @@
 // Shared types — safe for both client and server imports
 
+export type Platform = "HTB" | "THM" | "VulnHub" | "PTGarage";
+export type Category = "Linux" | "Windows" | "Web" | "AD" | "Mobile";
+export type Difficulty = "Easy" | "Medium" | "Hard" | "Insane";
+
 export interface MachineMetadata {
   name: string;
   slug: string;
+  platform: Platform;
+  category: Category;
   os: string;
-  difficulty: "Easy" | "Medium" | "Hard" | "Insane";
+  difficulty: Difficulty;
   points: number;
   ip: string;
   date: string;
