@@ -55,7 +55,7 @@ export function FloatingNav({ className }: { className?: string }) {
           {/* Logo */}
           <Link
             href="/"
-            className="font-mono text-xs font-bold text-cyan-glow mr-4 tracking-widest"
+            className="hidden sm:block font-mono text-xs font-bold text-cyan-glow mr-4 tracking-widest"
           >
             RAHULCYBERX
           </Link>

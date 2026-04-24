@@ -115,8 +115,59 @@ export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartPro
           </span>
         </div>
 
-        {/* Flow Grid */}
-        <div className="space-y-4 min-w-[500px]">
+        {/* Flow Grid - Mobile (Vertical List) */}
+        <div className="flex flex-col md:hidden">
+          {sections.map((section, idx) => {
+            const phase = getPhaseColor(section.id);
+            const isLast = idx === sections.length - 1;
+
+            return (
+              <div key={section.id} className="flex flex-col items-center w-full">
+                <motion.a
+                  href={`#${section.id}`}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    delay: 0.8 + idx * 0.08,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25,
+                  }}
+                  className="w-full px-4 py-3 rounded-md text-center cursor-pointer transition-all duration-200 hover:scale-[1.02] group"
+                  style={{
+                    backgroundColor: phase.glow,
+                    border: `1.5px solid ${phase.border}`,
+                  }}
+                  whileHover={{
+                    boxShadow: `0 0 16px ${phase.glow}, 0 0 4px ${phase.border}`,
+                  }}
+                >
+                  <span
+                    className="text-[11px] font-mono font-medium tracking-wide block truncate"
+                    style={{ color: phase.text }}
+                  >
+                    {section.title}
+                  </span>
+                </motion.a>
+
+                {!isLast && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.9 + idx * 0.08 }}
+                    className="flex flex-col items-center py-1"
+                  >
+                    <div className="w-px h-3 bg-spectral/20" />
+                    <ChevronDown className="w-3 h-3 text-spectral/30 -my-0.5" />
+                  </motion.div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Flow Grid - Desktop (Horizontal Rows) */}
+        <div className="hidden md:block space-y-4">
           {rows.map((row, rowIdx) => (
             <div key={rowIdx}>
               {/* Row of boxes */}
