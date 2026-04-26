@@ -210,7 +210,7 @@ export function WalkthroughContent({
   const platformConfig = PLATFORMS[metadata.platform];
 
   return (
-    <div className="max-w-6xl mx-auto px-6 pt-28 pb-24">
+    <div className="relative max-w-6xl mx-auto px-6 pt-28 pb-24">
       {/* ── Back Link ── */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -381,6 +381,7 @@ export function WalkthroughContent({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9, duration: 0.5 }}
+        className="relative"
       >
         <div className="flex items-center gap-2 mb-8">
           <div className="h-px w-8 bg-cyan-glow/50" />
@@ -455,7 +456,7 @@ export function WalkthroughContent({
                   <FlagReveal flag={metadata.userFlag} type="user" />
                 )}
                 {metadata.rootFlag && (
-                  <FlagReveal flag={metadata.rootFlag} type="root" />
+                  <FlagReveal flag={metadata.rootFlag} type="root" machineSlug={metadata.slug} />
                 )}
               </div>
             </div>

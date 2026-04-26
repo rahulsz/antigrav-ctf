@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 // Extract all code blocks and highlight them server-side
 async function getHighlightedSections(content: string) {
   const codeBlocks: Array<{ lang: string; code: string; html: string }> = [];
-  const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+  const codeBlockRegex = /```(\w+)?\r?\n([\s\S]*?)```/g;
   let match;
   let processedContent = content;
 

@@ -1,12 +1,15 @@
 "use client";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
 import { Suspense } from "react";
 
 function StarfieldScene() {
+  const { invalidate } = useThree();
+
   useFrame((state) => {
     // Slow rotation for subtle movement
     state.scene.rotation.y = state.clock.getElapsedTime() * 0.02;
+    invalidate();
   });
 
   return (
@@ -15,7 +18,7 @@ function StarfieldScene() {
       <Stars
         radius={100}
         depth={60}
-        count={4000}
+        count={2000}
         factor={4}
         saturation={0}
         fade
@@ -35,9 +38,9 @@ export default function Starfield() {
       <Canvas
         camera={{ position: [0, 0, 1] }}
         style={{ background: "transparent" }}
-        gl={{ antialias: false, alpha: true }}
+        gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}
         dpr={[1, 1.5]}
-        frameloop="always"
+        frameloop="demand"
       >
         <Suspense fallback={null}>
           <StarfieldScene />
@@ -46,3 +49,4 @@ export default function Starfield() {
     </div>
   );
 }
+

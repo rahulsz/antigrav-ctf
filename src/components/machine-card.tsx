@@ -4,7 +4,8 @@ import { CardSpotlight } from "@/components/ui/aceternity/card-spotlight";
 import { getDifficultyColor, getDifficultyBg } from "@/lib/difficulty";
 import { PLATFORMS } from "@/lib/platforms";
 import type { Platform } from "@/lib/types";
-import { Monitor, Apple, Terminal, Calendar, ChevronRight } from "lucide-react";
+import { useProgress } from "@/hooks/use-progress";
+import { Monitor, Apple, Terminal, Calendar, ChevronRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
 interface MachineCardProps {
@@ -39,6 +40,8 @@ export function MachineCard({
 }: MachineCardProps) {
   const platformConfig = PLATFORMS[platform];
   const platformSlug = platformConfig?.slug || platform.toLowerCase();
+  const { isCompleted } = useProgress();
+  const completed = isCompleted(slug);
 
   return (
     <motion.div
@@ -61,17 +64,27 @@ export function MachineCard({
                   {getOSIcon(os)}
                 </div>
                 <div>
-                  <h3 className="font-bold text-ghost text-base tracking-wide">
+                  <h3 className="font-bold text-ghost text-base tracking-wide flex items-center gap-2">
                     {name}
+                    {completed && (
+                      <CheckCircle2 className="w-4 h-4 text-success" aria-label="Completed" />
+                    )}
                   </h3>
                   <span className="text-spectral/60 text-xs font-mono">{os}</span>
                 </div>
               </div>
-              <span
-                className={`text-xs font-mono px-2 py-0.5 rounded border ${getDifficultyBg(difficulty)} ${getDifficultyColor(difficulty)}`}
-              >
-                {difficulty}
-              </span>
+              <div className="flex flex-col items-end gap-2">
+                {completed && (
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-success border border-success/30 bg-success/10 px-1.5 py-0.5 rounded">
+                    Pwned
+                  </span>
+                )}
+                <span
+                  className={`text-xs font-mono px-2 py-0.5 rounded border ${getDifficultyBg(difficulty)} ${getDifficultyColor(difficulty)}`}
+                >
+                  {difficulty}
+                </span>
+              </div>
             </div>
 
             {/* Platform badge */}

@@ -14,7 +14,10 @@ export const TracingBeam = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const [svgHeight, setSvgHeight] = useState(0);
 
+  const scrollContainerRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
+    (scrollContainerRef as React.MutableRefObject<HTMLElement | null>).current = document.documentElement;
     if (contentRef.current) {
       setSvgHeight(contentRef.current.offsetHeight);
     }
@@ -22,6 +25,7 @@ export const TracingBeam = ({
 
   const { scrollYProgress } = useScroll({
     target: ref,
+    container: scrollContainerRef,
     offset: ["start center", "end center"],
   });
 

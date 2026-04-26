@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MultiStepLoader } from "@/components/ui/aceternity/multi-step-loader";
 import { Lock, Unlock, ShieldCheck } from "lucide-react";
+import { useProgress } from "@/hooks/use-progress";
 
 const loadingStates = [
   { text: "Scanning memory segments..." },
@@ -15,12 +16,15 @@ const loadingStates = [
 export function FlagReveal({
   flag,
   type = "root",
+  machineSlug,
 }: {
   flag: string;
   type?: "user" | "root";
+  machineSlug?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const { markCompleted } = useProgress();
 
   const isRoot = type === "root";
   const accentColor = isRoot ? "var(--danger)" : "var(--success)";
@@ -35,6 +39,9 @@ export function FlagReveal({
     setTimeout(() => {
       setLoading(false);
       setRevealed(true);
+      if (isRoot && machineSlug) {
+        markCompleted(machineSlug);
+      }
     }, 500);
   };
 

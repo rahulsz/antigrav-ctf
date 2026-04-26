@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* ═══════════════════════════════════════════════════════
    RAHULCYBERX — Deep Space Design System

@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { PLATFORMS } from "@/lib/platforms";
@@ -15,7 +16,7 @@ interface KillChainFlowchartProps {
 }
 
 // Map section IDs to phase colors
-function getPhaseColor(id: string): { border: string; text: string; glow: string } {
+function getPhaseColor(id: string): { border: string; text: string; glow: string; bgActive: string } {
   const lower = id.toLowerCase();
 
   // Recon / Enumeration — Cyan/Blue
@@ -29,6 +30,7 @@ function getPhaseColor(id: string): { border: string; text: string; glow: string
       border: "rgba(6, 182, 212, 0.7)",
       text: "#06b6d4",
       glow: "rgba(6, 182, 212, 0.15)",
+      bgActive: "rgba(6, 182, 212, 0.3)",
     };
   }
 
@@ -43,6 +45,7 @@ function getPhaseColor(id: string): { border: string; text: string; glow: string
       border: "rgba(34, 197, 94, 0.7)",
       text: "#22c55e",
       glow: "rgba(34, 197, 94, 0.15)",
+      bgActive: "rgba(34, 197, 94, 0.3)",
     };
   }
 
@@ -57,6 +60,7 @@ function getPhaseColor(id: string): { border: string; text: string; glow: string
       border: "rgba(249, 115, 22, 0.7)",
       text: "#f97316",
       glow: "rgba(249, 115, 22, 0.15)",
+      bgActive: "rgba(249, 115, 22, 0.3)",
     };
   }
 
@@ -72,6 +76,7 @@ function getPhaseColor(id: string): { border: string; text: string; glow: string
       border: "rgba(239, 68, 68, 0.7)",
       text: "#ef4444",
       glow: "rgba(239, 68, 68, 0.15)",
+      bgActive: "rgba(239, 68, 68, 0.3)",
     };
   }
 
@@ -80,12 +85,34 @@ function getPhaseColor(id: string): { border: string; text: string; glow: string
     border: "rgba(148, 163, 184, 0.5)",
     text: "#94a3b8",
     glow: "rgba(148, 163, 184, 0.1)",
+    bgActive: "rgba(148, 163, 184, 0.3)",
   };
 }
 
 export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartProps) {
+  const [activeSection, setActiveSection] = useState<string>("");
   const platformConfig = PLATFORMS[metadata.platform];
   const COLS = 4; // Max columns per row
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-20% 0px -60% 0px" }
+    );
+
+    sections.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [sections]);
 
   // Split sections into rows of COLS
   const rows: Section[][] = [];
@@ -101,7 +128,7 @@ export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartPro
       className="mb-12"
     >
       {/* Chart Container */}
-      <div className="relative rounded-xl bg-abyss/90 border border-nebula/50 backdrop-blur-sm p-5 md:p-6 overflow-x-auto">
+      <div className="relative rounded-xl bg-abyss/90 border border-nebula/50 backdrop-blur-md p-5 md:p-6 overflow-x-auto shadow-xl">
         {/* Title bar */}
         <div className="flex items-center justify-center gap-2 mb-5">
           <span className="text-sm font-bold text-ghost tracking-wide">
@@ -120,6 +147,7 @@ export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartPro
           {sections.map((section, idx) => {
             const phase = getPhaseColor(section.id);
             const isLast = idx === sections.length - 1;
+            const isActive = activeSection === section.id;
 
             return (
               <div key={section.id} className="flex flex-col items-center w-full">
@@ -133,18 +161,22 @@ export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartPro
                     stiffness: 300,
                     damping: 25,
                   }}
-                  className="w-full px-4 py-3 rounded-md text-center cursor-pointer transition-all duration-200 hover:scale-[1.02] group"
+                  className={`w-full px-4 py-3 rounded-md text-center cursor-pointer transition-all duration-300 hover:scale-[1.02] group ${
+                    activeSection && !isActive ? "opacity-40" : "opacity-100"
+                  }`}
                   style={{
-                    backgroundColor: phase.glow,
+                    backgroundColor: isActive ? phase.bgActive : phase.glow,
                     border: `1.5px solid ${phase.border}`,
+                    boxShadow: isActive ? `0 0 20px ${phase.glow}, 0 0 5px ${phase.border}` : "none",
                   }}
                   whileHover={{
                     boxShadow: `0 0 16px ${phase.glow}, 0 0 4px ${phase.border}`,
+                    opacity: 1,
                   }}
                 >
                   <span
                     className="text-[11px] font-mono font-medium tracking-wide block truncate"
-                    style={{ color: phase.text }}
+                    style={{ color: isActive ? "#ffffff" : phase.text }}
                   >
                     {section.title}
                   </span>
@@ -176,6 +208,7 @@ export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartPro
                   const phase = getPhaseColor(section.id);
                   const isLastInRow = colIdx === row.length - 1;
                   const globalIdx = rowIdx * COLS + colIdx;
+                  const isActive = activeSection === section.id;
 
                   return (
                     <div key={section.id} className="flex items-center flex-1 min-w-0">
@@ -190,18 +223,22 @@ export function KillChainFlowchart({ metadata, sections }: KillChainFlowchartPro
                           stiffness: 300,
                           damping: 25,
                         }}
-                        className="flex-1 min-w-0 px-3 py-2.5 rounded-md text-center cursor-pointer transition-all duration-200 hover:scale-[1.03] group"
+                        className={`flex-1 min-w-0 px-3 py-2.5 rounded-md text-center cursor-pointer transition-all duration-300 hover:scale-[1.03] group ${
+                          activeSection && !isActive ? "opacity-40" : "opacity-100"
+                        }`}
                         style={{
-                          backgroundColor: phase.glow,
+                          backgroundColor: isActive ? phase.bgActive : phase.glow,
                           border: `1.5px solid ${phase.border}`,
+                          boxShadow: isActive ? `0 0 20px ${phase.glow}, 0 0 5px ${phase.border}` : "none",
                         }}
                         whileHover={{
                           boxShadow: `0 0 16px ${phase.glow}, 0 0 4px ${phase.border}`,
+                          opacity: 1,
                         }}
                       >
                         <span
                           className="text-[11px] md:text-xs font-mono font-medium tracking-wide block truncate"
-                          style={{ color: phase.text }}
+                          style={{ color: isActive ? "#ffffff" : phase.text }}
                         >
                           {section.title}
                         </span>

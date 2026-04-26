@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { StarfieldWrapper } from "@/components/three/starfield-wrapper";
+import { CommandPalette } from "@/components/command-palette";
+import { getAllMachines } from "@/lib/machines";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,14 +33,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const machines = getAllMachines();
+
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrains.variable} h-full antialiased relative`}
     >
       <body className="min-h-full flex flex-col relative">
         {/* 3D Starfield background */}
         <StarfieldWrapper />
+
+        {/* Global Command Palette */}
+        <CommandPalette machines={machines} />
 
         {/* Main content */}
         <main className="relative z-10 flex-1">{children}</main>
