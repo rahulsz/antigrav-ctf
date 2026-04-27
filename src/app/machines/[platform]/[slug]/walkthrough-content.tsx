@@ -91,38 +91,89 @@ function renderBody(body: string, codeBlocks: CodeBlockData[]) {
       const text = parts[i].trim();
       if (text) {
         const lines = text.split("\n").filter((l) => l.trim());
+        const blocks = [];
+        let j = 0;
+        
+        while (j < lines.length) {
+          const line = lines[j];
+          
+          if (line.startsWith("### ")) {
+            blocks.push(
+              <h4
+                key={`h4-${j}`}
+                className="text-ghost font-semibold text-base mt-6 mb-2 flex items-center gap-2"
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-cyan-glow" />
+                {line.replace("### ", "")}
+              </h4>
+            );
+            j++;
+          } else if (line.startsWith("> ")) {
+            blocks.push(
+              <blockquote
+                key={`bq-${j}`}
+                className="border-l-2 border-cyan-glow/50 pl-4 my-4 italic text-spectral/80"
+              >
+                {renderInlineMarkdown(line.slice(2))}
+              </blockquote>
+            );
+            j++;
+          } else if (line.startsWith("- ") || line.startsWith("* ")) {
+            blocks.push(
+              <div key={`li-${j}`} className="flex gap-2 pl-2">
+                <span className="text-cyan-glow mt-1.5 text-xs">▸</span>
+                <p className="text-spectral text-sm leading-relaxed">
+                  {renderInlineMarkdown(line.slice(2))}
+                </p>
+              </div>
+            );
+            j++;
+          } else if (line.startsWith("|") && line.includes("|", 1)) {
+            const tableLines = [];
+            while (j < lines.length && lines[j].startsWith("|")) {
+              tableLines.push(lines[j]);
+              j++;
+            }
+            
+            blocks.push(
+              <div key={`table-${j}`} className="overflow-x-auto my-6 border border-glass-border rounded-lg w-full">
+                <table className="w-full text-left text-sm text-spectral min-w-max">
+                  <thead className="bg-abyss/80 border-b border-glass-border">
+                    <tr>
+                      {tableLines[0].split("|").slice(1, -1).map((cell, idx) => (
+                        <th key={idx} className="p-3 font-semibold text-ghost whitespace-nowrap">
+                          {renderInlineMarkdown(cell.trim())}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-glass-border bg-abyss/40">
+                    {tableLines.slice(2).map((row, rowIdx) => (
+                      <tr key={rowIdx} className="hover:bg-cyan-glow/5 transition-colors">
+                        {row.split("|").slice(1, -1).map((cell, colIdx) => (
+                          <td key={colIdx} className="p-3">
+                            {renderInlineMarkdown(cell.trim())}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          } else {
+            blocks.push(
+              <p key={`p-${j}`} className="text-spectral text-sm leading-relaxed">
+                {renderInlineMarkdown(line)}
+              </p>
+            );
+            j++;
+          }
+        }
+
         elements.push(
           <div key={`text-${i}`} className="space-y-3">
-            {lines.map((line, j) => {
-              if (line.startsWith("### ")) {
-                return (
-                  <h4
-                    key={j}
-                    className="text-ghost font-semibold text-base mt-6 mb-2 flex items-center gap-2"
-                  >
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-glow" />
-                    {line.replace("### ", "")}
-                  </h4>
-                );
-              }
-
-              if (line.startsWith("- ") || line.startsWith("* ")) {
-                return (
-                  <div key={j} className="flex gap-2 pl-2">
-                    <span className="text-cyan-glow mt-1.5 text-xs">▸</span>
-                    <p className="text-spectral text-sm leading-relaxed">
-                      {renderInlineMarkdown(line.slice(2))}
-                    </p>
-                  </div>
-                );
-              }
-
-              return (
-                <p key={j} className="text-spectral text-sm leading-relaxed">
-                  {renderInlineMarkdown(line)}
-                </p>
-              );
-            })}
+            {blocks}
           </div>
         );
       }
