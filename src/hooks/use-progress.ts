@@ -11,6 +11,7 @@ export function useProgress() {
     try {
       const stored = localStorage.getItem(PROGRESS_KEY);
       if (stored) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCompletedMachines(JSON.parse(stored));
       }
     } catch (e) {

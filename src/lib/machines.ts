@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import type { MachineMetadata, Machine, Platform } from "./types";
-import { getPlatformBySlug, getAllPlatformSlugs } from "./platforms";
+import type { MachineMetadata, Machine } from "./types";
+import { getPlatformBySlug } from "./platforms";
 
 export type { MachineMetadata, Machine };
 

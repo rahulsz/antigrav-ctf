@@ -63,7 +63,7 @@ export function CommandPalette({ machines }: CommandPaletteProps) {
               {machines.map((machine) => {
                 const platformConfig = PLATFORMS[machine.platform];
                 // Determine platform slug safely. Fallback to lowercase platform string.
-                const platformSlug = Object.entries(PLATFORMS).find(([_, p]) => p.name === machine.platform)?.[0] || machine.platform.toLowerCase();
+                const platformSlug = Object.entries(PLATFORMS).find(([, p]) => p.name === machine.platform)?.[0] || machine.platform.toLowerCase();
                 
                 return (
                   <Command.Item

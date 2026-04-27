@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,6 @@ export const TextGenerateEffect = ({
   duration?: number;
 }) => {
   const [scope, animate] = useAnimate();
-  const [renderKey, setRenderKey] = useState(0);
   const wordsArray = words.split(" ");
 
   useEffect(() => {
@@ -26,7 +25,7 @@ export const TextGenerateEffect = ({
         { duration, delay: stagger(0.08) }
       );
     }
-  }, [scope, animate, filter, duration, renderKey]);
+  }, [scope, animate, filter, duration]);
 
   return (
     <div className={cn("font-bold", className)}>

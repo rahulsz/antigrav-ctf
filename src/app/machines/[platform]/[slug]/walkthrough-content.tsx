@@ -108,6 +108,17 @@ function renderBody(body: string, codeBlocks: CodeBlockData[]) {
               </h4>
             );
             j++;
+          } else if (line.startsWith("#### ")) {
+            blocks.push(
+              <h5
+                key={`h5-${j}`}
+                className="text-ghost font-medium text-sm mt-5 mb-2 flex items-center gap-2"
+              >
+                <div className="w-1 h-1 rounded-full bg-violet-glow" />
+                {line.replace("#### ", "")}
+              </h5>
+            );
+            j++;
           } else if (line.startsWith("> ")) {
             blocks.push(
               <blockquote

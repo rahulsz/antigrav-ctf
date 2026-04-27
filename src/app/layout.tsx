@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { StarfieldWrapper } from "@/components/three/starfield-wrapper";
-import { CommandPalette } from "@/components/command-palette";
+import dynamic from "next/dynamic";
 import { getAllMachines } from "@/lib/machines";
 import "./globals.css";
+
+const StarfieldWrapper = dynamic(() => import("@/components/three/starfield-wrapper").then(mod => mod.StarfieldWrapper));
+const CommandPalette = dynamic(() => import("@/components/command-palette").then(mod => mod.CommandPalette));
 
 const inter = Inter({
   variable: "--font-inter",

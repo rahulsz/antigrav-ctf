@@ -2,7 +2,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PLATFORMS } from "@/lib/platforms";
-import { getDifficultyColor } from "@/lib/difficulty";
 import type { MachineMetadata, Platform, Category, Difficulty } from "@/lib/types";
 import { MachineCard } from "@/components/machine-card";
 import { Filter, X } from "lucide-react";

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { CheckCircle, Loader2, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 type LoadingState = {
   text: string;
@@ -113,6 +113,7 @@ export const MultiStepLoader = ({
 
   useEffect(() => {
     if (!loading) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentState(0);
       return;
     }

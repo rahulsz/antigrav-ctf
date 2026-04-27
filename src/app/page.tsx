@@ -16,7 +16,7 @@ export default function HomePage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-xl font-bold text-ghost tracking-wide">
-              <span className="text-cyan-glow font-mono mr-2">//</span>
+              <span className="text-cyan-glow font-mono mr-2">{"//"}</span>
               Recent Breaches
             </h2>
             <p className="text-spectral text-sm mt-1">
